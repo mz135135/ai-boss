@@ -122,8 +122,19 @@ class VoiceRecognizer(private val context: Context) {
             return
         }
         
-        if (recognizer == null) {
+        if (model == null) {
             onError?.invoke("模型未初始化")
+            return
+        }
+        
+        // 每次录音创建新的 recognizer 实例，避免 reset() 导致的 native 崩溃
+        try {
+            recognizer?.close()
+            recognizer = Recognizer(model, SAMPLE_RATE)
+            Log.d(TAG, "创建新的 recognizer 实例")
+        } catch (e: Exception) {
+            Log.e(TAG, "创建 recognizer 失败: ${e.message}")
+            onError?.invoke("初始化识别器失败")
             return
         }
         
@@ -163,30 +174,54 @@ class VoiceRecognizer(private val context: Context) {
     fun stopListening() {
         isRecording = false
         recognitionJob?.cancel()
+        recognitionJob = null
         
-        audioRecord?.apply {
-            if (state == AudioRecord.STATE_INITIALIZED) {
-                stop()
-            }
-            release()
-        }
-        audioRecord = null
-        
-        // 获取最终结果
-        recognizer?.apply {
-            val finalResult = getFinalResult()
-            try {
-                val text = JSONObject(finalResult).getString("text")
-                if (text.isNotEmpty()) {
-                    onResult?.invoke(text)
+        try {
+            audioRecord?.apply {
+                try {
+                    if (state == AudioRecord.STATE_INITIALIZED) {
+                        stop()
+                    }
+                } catch (e: Exception) {
+                    Log.e(TAG, "停止录音失败: ${e.message}")
                 }
-            } catch (e: Exception) {
-                Log.e(TAG, "解析最终结果失败: ${e.message}")
+                try {
+                    release()
+                } catch (e: Exception) {
+                    Log.e(TAG, "释放AudioRecord失败: ${e.message}")
+                }
             }
-            reset()
+            audioRecord = null
+            
+            // 获取最终结果
+            recognizer?.apply {
+                try {
+                    val finalResult = getFinalResult()
+                    try {
+                        val text = JSONObject(finalResult).getString("text")
+                        if (text.isNotEmpty()) {
+                            onResult?.invoke(text)
+                        }
+                    } catch (e: Exception) {
+                        Log.e(TAG, "解析最终结果失败: ${e.message}")
+                    }
+                } catch (e: Exception) {
+                    Log.e(TAG, "获取最终结果失败: ${e.message}")
+                }
+                
+                // reset() 可能导致 native 崩溃，暂时不调用
+                // 改用创建新的 recognizer 实例
+                try {
+                    // reset()
+                } catch (e: Exception) {
+                    Log.e(TAG, "重置识别器失败: ${e.message}")
+                }
+            }
+            
+            Log.i(TAG, "停止录音识别")
+        } catch (e: Exception) {
+            Log.e(TAG, "stopListening异常: ${e.message}", e)
         }
-        
-        Log.i(TAG, "停止录音识别")
     }
     
     /**
