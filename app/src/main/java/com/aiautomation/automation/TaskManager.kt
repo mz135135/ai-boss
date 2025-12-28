@@ -883,11 +883,14 @@ class TaskManager(
                         val ms = jsonObj.get("milliseconds")?.asLong ?: 1000
                         Action.Wait(ms)
                     }
-                    "finish" -> {
+                    "finish", "finished" -> {
                         val result = jsonObj.get("result")?.asString ?: ""
                         Action.Finish(result)
                     }
-                    else -> Action.Wait(1000)
+                    else -> {
+                        Log.w(TAG, "未知动作类型: $actionType，默认等待")
+                        Action.Wait(1000)
+                    }
                 }
             } else {
                 // 未找到 JSON，默认等待
