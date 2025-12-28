@@ -320,7 +320,7 @@ class MyAccessibilityService : AccessibilityService() {
 
     /**
      * 坐标驱动输入/清空：按屏幕坐标在当前窗口节点树中定位可编辑控件（按 bounds 命中），然后执行 ACTION_SET_TEXT。
-     * 不做节点点击，不做文本找节点。
+     * 如果找不到可编辑控件，则使用剪贴板粘贴兜底。
      */
     suspend fun setTextAt(x: Int, y: Int, text: String): Boolean = withContext(Dispatchers.Main) {
         try {
@@ -330,49 +330,111 @@ class MyAccessibilityService : AccessibilityService() {
             Log.d(TAG, "[setText] 坐标: ($x,$y) -> ($cx,$cy), len=${text.length}")
 
             val node = findEditableNodeAt(cx, cy)
-            if (node == null) {
-                Log.e(TAG, "[setText] 未找到可编辑控件: ($cx,$cy)")
-                return@withContext false
-            }
-
-            // 先尝试 setText
-            val okSet = inputText(node, text)
-            if (okSet) {
-                node.recycle()
-                return@withContext true
-            }
-
-            // 兜底：剪贴板 + ACTION_PASTE（仍然不做节点点击）
-            // 1. 先清空输入框（防止追加导致内容重复）
-            node.performAction(
-                AccessibilityNodeInfo.ACTION_SET_TEXT,
-                android.os.Bundle().apply {
-                    putCharSequence(AccessibilityNodeInfo.ACTION_ARGUMENT_SET_TEXT_CHARSEQUENCE, "")
+            
+            // 方案1：找到可编辑节点，使用 ACTION_SET_TEXT
+            if (node != null) {
+                val okSet = inputText(node, text)
+                if (okSet) {
+                    Log.d(TAG, "[setText] ✓ ACTION_SET_TEXT 成功")
+                    node.recycle()
+                    return@withContext true
                 }
-            )
-            kotlinx.coroutines.delay(50)  // 等待清空生效
+
+                // 尝试剪贴板粘贴
+                node.performAction(
+                    AccessibilityNodeInfo.ACTION_SET_TEXT,
+                    android.os.Bundle().apply {
+                        putCharSequence(AccessibilityNodeInfo.ACTION_ARGUMENT_SET_TEXT_CHARSEQUENCE, "")
+                    }
+                )
+                kotlinx.coroutines.delay(50)
+                
+                val clipboard = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                clipboard.setPrimaryClip(ClipData.newPlainText("Boss助手", text))
+                
+                node.performAction(AccessibilityNodeInfo.ACTION_FOCUS)
+                kotlinx.coroutines.delay(100)
+                
+                val pasteOk = node.performAction(AccessibilityNodeInfo.ACTION_PASTE)
+                kotlinx.coroutines.delay(50)
+                node.refresh()
+                val finalText = node.text?.toString() ?: ""
+                val success = pasteOk && finalText == text
+                
+                Log.d(TAG, "[setText] paste兜底: pasteOk=$pasteOk, 期望='$text', 实际='$finalText', 成功=$success")
+                node.recycle()
+                if (success) return@withContext true
+            }
             
-            // 2. 设置剪贴板
-            val clipboard = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-            clipboard.setPrimaryClip(ClipData.newPlainText("Boss助手", text))
+            // 方案2：找不到可编辑节点（如浏览器输入框），使用全局剪贴板粘贴
+            Log.d(TAG, "[setText] 尝试全局剪贴板粘贴兜底...")
+            return@withContext pasteTextGlobal(text)
             
-            // 3. 获取焦点并粘贴
-            node.performAction(AccessibilityNodeInfo.ACTION_FOCUS)
-            kotlinx.coroutines.delay(100)  // 等待焦点生效
-            
-            val pasteOk = node.performAction(AccessibilityNodeInfo.ACTION_PASTE)
-            
-            // 4. 验证最终内容
-            kotlinx.coroutines.delay(50)  // 等待粘贴生效
-            node.refresh()
-            val finalText = node.text?.toString() ?: ""
-            val success = pasteOk && finalText == text
-            
-            Log.d(TAG, "[setText] paste兜底: pasteOk=$pasteOk, 期望='$text', 实际='$finalText', 成功=$success")
-            node.recycle()
-            return@withContext success
         } catch (e: Exception) {
             Log.e(TAG, "[setText] 异常", e)
+            false
+        }
+    }
+    
+    /**
+     * 全局剪贴板粘贴：适用于无法找到可编辑节点的情况（如浏览器地址栏）
+     * 假设当前焦点已在输入框内
+     */
+    private suspend fun pasteTextGlobal(text: String): Boolean = withContext(Dispatchers.Main) {
+        try {
+            // 1. 设置剪贴板内容
+            val clipboard = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+            clipboard.setPrimaryClip(ClipData.newPlainText("Boss助手", text))
+            kotlinx.coroutines.delay(100)
+            
+            // 2. 尝试找到当前焦点节点并粘贴
+            val root = rootInActiveWindow
+            if (root != null) {
+                val focusedNode = root.findFocus(AccessibilityNodeInfo.FOCUS_INPUT)
+                if (focusedNode != null) {
+                    // 先尝试 SET_TEXT
+                    val setOk = focusedNode.performAction(
+                        AccessibilityNodeInfo.ACTION_SET_TEXT,
+                        android.os.Bundle().apply {
+                            putCharSequence(AccessibilityNodeInfo.ACTION_ARGUMENT_SET_TEXT_CHARSEQUENCE, text)
+                        }
+                    )
+                    if (setOk) {
+                        Log.d(TAG, "[pasteGlobal] ✓ 焦点节点 SET_TEXT 成功")
+                        focusedNode.recycle()
+                        return@withContext true
+                    }
+                    
+                    // 再尝试粘贴
+                    val pasteOk = focusedNode.performAction(AccessibilityNodeInfo.ACTION_PASTE)
+                    if (pasteOk) {
+                        Log.d(TAG, "[pasteGlobal] ✓ 焦点节点粘贴成功")
+                        focusedNode.recycle()
+                        return@withContext true
+                    }
+                    focusedNode.recycle()
+                }
+            }
+            
+            // 3. 尝试遍历所有可编辑节点进行粘贴
+            val allEditables = findAllEditableNodes(root)
+            for (editNode in allEditables) {
+                editNode.performAction(AccessibilityNodeInfo.ACTION_FOCUS)
+                kotlinx.coroutines.delay(50)
+                val pOk = editNode.performAction(AccessibilityNodeInfo.ACTION_PASTE)
+                if (pOk) {
+                    Log.d(TAG, "[pasteGlobal] ✓ 遍历找到可粘贴节点")
+                    allEditables.forEach { it.recycle() }
+                    return@withContext true
+                }
+            }
+            allEditables.forEach { it.recycle() }
+            
+            Log.d(TAG, "[pasteGlobal] 剪贴板已设置，等待用户操作或AI重试")
+            return@withContext true // 剪贴板已准备好
+            
+        } catch (e: Exception) {
+            Log.e(TAG, "[pasteGlobal] 异常", e)
             false
         }
     }
@@ -416,6 +478,26 @@ class MyAccessibilityService : AccessibilityService() {
         val supportsPaste = (node.actions and AccessibilityNodeInfo.ACTION_PASTE) != 0
 
         return node.isEditable || supportsSetText || supportsPaste || cls.contains("EditText", ignoreCase = true)
+    }
+    
+    /**
+     * 查找所有可编辑节点
+     */
+    private fun findAllEditableNodes(root: AccessibilityNodeInfo?): List<AccessibilityNodeInfo> {
+        val result = mutableListOf<AccessibilityNodeInfo>()
+        if (root == null) return result
+        findAllEditableNodesRecursive(root, result)
+        return result
+    }
+    
+    private fun findAllEditableNodesRecursive(node: AccessibilityNodeInfo, result: MutableList<AccessibilityNodeInfo>) {
+        if (isEditableCandidate(node)) {
+            result.add(node)
+        }
+        for (i in 0 until node.childCount) {
+            val child = node.getChild(i) ?: continue
+            findAllEditableNodesRecursive(child, result)
+        }
     }
     
     

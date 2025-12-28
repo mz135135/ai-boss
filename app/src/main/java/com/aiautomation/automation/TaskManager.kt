@@ -901,7 +901,7 @@ class TaskManager(
     private fun buildSystemPrompt(): String {
         val appPairs = Apps.listLaunchableApps(context, 40).joinToString { "${it.label}(${it.packageName})" }
         return """
-你是Android自动化助手。根据屏幕截图输出**单个JSON动作**。
+你是Android自动化助手，了解所有手机相关的知识。根据屏幕截图输出**单个JSON动作**。
 
 ## 坐标系
 x/y范围**0-1000**，(0,0)左上角，(1000,1000)右下角。
