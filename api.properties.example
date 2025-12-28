@@ -1,0 +1,8 @@
+# API Configuration Template
+# Copy this file to 'api.properties' and fill in your actual API credentials
+# DO NOT commit api.properties to version control
+
+# Doubao AI API Configuration
+DOUBAO_API_KEY=your_api_key_here
+DOUBAO_BASE_URL=https://ark.cn-beijing.volces.com/api/v3
+DOUBAO_MODEL_ID=doubao-seed-1-6-flash-250828

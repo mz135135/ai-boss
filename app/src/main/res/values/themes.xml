@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.AIAutomation" parent="android:Theme.Material.Light.NoActionBar">
+        <item name="android:statusBarColor">@color/md_theme_light_primary</item>
+        <item name="android:navigationBarColor">@color/md_theme_light_surface</item>
+        <item name="android:colorPrimary">@color/md_theme_light_primary</item>
+        <item name="android:colorPrimaryDark">@color/md_theme_light_primaryContainer</item>
+        <item name="android:colorAccent">@color/md_theme_light_secondary</item>
+    </style>
+</resources>

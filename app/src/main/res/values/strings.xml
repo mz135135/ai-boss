@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Boss助手</string>
+    <string name="home">首页</string>
+    <string name="tasks">任务</string>
+    <string name="settings">设置</string>
+    <string name="create_task">创建任务</string>
+    <string name="task_description">任务描述</string>
+    <string name="execute">执行</string>
+    <string name="cancel">取消</string>
+    <string name="save">保存</string>
+    <string name="accessibility_service_description">Boss助手需要无障碍权限来执行自动化操作</string>
+    <string name="enable_accessibility">启用无障碍服务</string>
+    <string name="api_key_hint">请输入火山方舟 API Key</string>
+    <string name="model_id_hint">请输入模型 Endpoint ID</string>
+</resources>

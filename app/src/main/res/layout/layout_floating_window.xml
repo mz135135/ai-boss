@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="72dp"
+    android:layout_height="72dp">
+    
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:cardCornerRadius="36dp"
+        app:cardElevation="8dp"
+        app:cardBackgroundColor="#FF6200EE"
+        android:alpha="0.95">
+        
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="8dp">
+            
+            <TextView
+                android:id="@+id/tvStatus"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="AI"
+                android:textSize="12sp"
+                android:textColor="@android:color/white"
+                android:textStyle="bold"
+                android:layout_centerInParent="true"
+                android:gravity="center"
+                android:maxLines="2"
+                android:ellipsize="end"/>
+            
+            <ImageButton
+                android:id="@+id/btnStop"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:src="@android:drawable/ic_menu_close_clear_cancel"
+                android:background="@android:color/transparent"
+                android:scaleType="fitXY"
+                android:tint="@android:color/white"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentEnd="true"
+                android:contentDescription="停止"/>
+        </RelativeLayout>
+    </androidx.cardview.widget.CardView>
+</FrameLayout>

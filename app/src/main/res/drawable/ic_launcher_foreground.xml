@@ -1,0 +1,60 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <!-- 居中的现代化设计 -->
+    <group
+        android:translateX="54"
+        android:translateY="54">
+        
+        <!-- 外层圆环（装饰） -->
+        <path
+            android:fillColor="#FFFFFF"
+            android:fillAlpha="0.15"
+            android:pathData="M0,0m-32,0a32,32 0,1,1 64,0a32,32 0,1,1 -64,0"/>
+        
+        <!-- 主圆形背景 -->
+        <path
+            android:fillColor="#FFFFFF"
+            android:fillAlpha="0.95"
+            android:pathData="M0,0m-28,0a28,28 0,1,1 56,0a28,28 0,1,1 -56,0"/>
+        
+        <!-- 简约商务人像头部 -->
+        <path
+            android:fillColor="#6366F1"
+            android:pathData="M0,-8m-9,0a9,9 0,1,1 18,0a9,9 0,1,1 -18,0"/>
+        
+        <!-- 西装身体（梅形） -->
+        <path
+            android:fillColor="#1E293B"
+            android:pathData="M-12,2 L-12,16 Q-12,20 -8,20 L8,20 Q12,20 12,16 L12,2 Q12,2 10,2 L8,4 L8,6 L0,8 L-8,6 L-8,4 L-10,2 Q-12,2 -12,2 Z"/>
+        
+        <!-- 白色衬衫领 -->
+        <path
+            android:fillColor="#FFFFFF"
+            android:pathData="M-6,2 L-6,8 L-4,9 L-2,8 L0,8 L2,8 L4,9 L6,8 L6,2 Z"/>
+        
+        <!-- 现代简约领带 -->
+        <path
+            android:fillColor="#3B82F6"
+            android:pathData="M-2,3 L-1.5,6 L-1,12 L0,14 L1,12 L1.5,6 L2,3 Z"/>
+        
+        <!-- 公文包图标（左侧） -->
+        <path
+            android:fillColor="#D97706"
+            android:pathData="M-18,10 L-22,12 L-22,18 L-18,20 L-14,18 L-14,12 Z"/>
+        <path
+            android:fillColor="#F59E0B"
+            android:fillAlpha="0.8"
+            android:pathData="M-18,10 L-14,12 L-14,13 L-18,11 Z"/>
+        
+        <!-- AI灯泡图标（右侧） -->
+        <path
+            android:fillColor="#FBBF24"
+            android:pathData="M18,-2 L16,-8 L14,-10 Q14,-12 16,-12 Q18,-12 18,-10 L20,-8 L22,-2 Q22,0 20,2 L18,4 Q16,4 14,2 L14,0 Q14,-2 18,-2 Z"/>
+        <path
+            android:fillColor="#FDE047"
+            android:pathData="M16,-6 L18,-8 L20,-6 L19,-4 L17,-4 Z"/>
+    </group>
+</vector>
