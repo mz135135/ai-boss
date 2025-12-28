@@ -1,3 +1,5 @@
+import java.util.Properties
+
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
@@ -22,7 +24,7 @@ android {
         
         // Load API configuration from api.properties
         val apiPropertiesFile = rootProject.file("api.properties")
-        val apiProperties = java.util.Properties()
+        val apiProperties = Properties()
         if (apiPropertiesFile.exists()) {
             apiProperties.load(apiPropertiesFile.inputStream())
         }
@@ -37,6 +39,10 @@ android {
         release {
             isMinifyEnabled = true
             isShrinkResources = true
+            // Use release signing config if available
+            if (rootProject.file("keystore.properties").exists()) {
+                signingConfig = signingConfigs.getByName("release")
+            }
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"

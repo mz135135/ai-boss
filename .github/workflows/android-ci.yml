@@ -1,0 +1,91 @@
+name: Android CI
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Set up JDK 17
+      uses: actions/setup-java@v4
+      with:
+        distribution: 'temurin'
+        java-version: '17'
+        cache: 'gradle'
+    
+    - name: Grant execute permission for gradlew
+      run: chmod +x gradlew
+    
+    - name: Create api.properties
+      run: |
+        cat > api.properties << EOF
+        DOUBAO_API_KEY=${{ secrets.DOUBAO_API_KEY }}
+        DOUBAO_BASE_URL=https://ark.cn-beijing.volces.com/api/v3
+        DOUBAO_MODEL_ID=doubao-seed-1-6-flash-250828
+        EOF
+    
+    - name: Build with Gradle
+      run: ./gradlew build --stacktrace
+    
+    - name: Run unit tests
+      run: ./gradlew test --stacktrace
+    
+    - name: Upload build artifacts
+      uses: actions/upload-artifact@v4
+      if: success()
+      with:
+        name: build-artifacts
+        path: app/build/outputs/
+        retention-days: 7
+    
+    - name: Upload test results
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: test-results
+        path: app/build/test-results/
+        retention-days: 7
+
+  lint:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Set up JDK 17
+      uses: actions/setup-java@v4
+      with:
+        distribution: 'temurin'
+        java-version: '17'
+        cache: 'gradle'
+    
+    - name: Grant execute permission for gradlew
+      run: chmod +x gradlew
+    
+    - name: Create api.properties
+      run: |
+        cat > api.properties << EOF
+        DOUBAO_API_KEY=dummy_key_for_lint
+        DOUBAO_BASE_URL=https://ark.cn-beijing.volces.com/api/v3
+        DOUBAO_MODEL_ID=doubao-seed-1-6-flash-250828
+        EOF
+    
+    - name: Run Android Lint
+      run: ./gradlew lint
+    
+    - name: Upload lint results
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: lint-results
+        path: app/build/reports/lint-results-*.html
+        retention-days: 7

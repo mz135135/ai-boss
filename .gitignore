@@ -91,6 +91,11 @@ lint-baseline.xml
 api.properties
 secrets.properties
 
+# Keystore files (Security)
+keystore.properties
+*.keystore
+*.jks
+
 # Large binary files
 *.har.bin
 *.zip

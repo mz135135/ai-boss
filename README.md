@@ -1,235 +1,261 @@
-# AI Boss - Intelligent Android Automation Assistant
+# AI Boss - 智能 Android 自动化助手
 
 <div align="center">
 
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![Android](https://img.shields.io/badge/platform-Android-green.svg)](https://developer.android.com)
 [![Kotlin](https://img.shields.io/badge/language-Kotlin-purple.svg)](https://kotlinlang.org)
+[![CI](https://github.com/mz135135/ai-boss/actions/workflows/android-ci.yml/badge.svg)](https://github.com/mz135135/ai-boss/actions)
 
-[中文文档](项目使用文档.md) | [English](README.md)
+[English](README_EN.md) | 中文文档
 
-An intelligent Android automation assistant powered by Doubao AI, featuring offline voice recognition and natural language task automation.
+一款基于豆包 AI 的 Android 智能助手应用，支持离线语音识别和自然语言任务自动化。
+
+[下载 APK](https://github.com/mz135135/ai-boss/releases) | [使用文档](项目使用文档.md) | [贡献指南](CONTRIBUTING.md)
 
 </div>
 
-## 📱 Overview
+## 📱 应用简介
 
-AI Boss is an Android application that combines AI intelligence with accessibility services to automate tasks on your device. Simply describe what you want to do in natural language (text or voice), and the AI will analyze the screen and execute the appropriate actions.
+AI Boss 是一款智能的 Android 自动化助手应用，通过自然语言描述任务，AI 会自动分析屏幕内容并执行相应操作。支持离线中文语音输入，让操作更加便捷。
 
-### ✨ Key Features
+### ✨ 核心特性
 
-- 🎤 **Offline Voice Recognition** - Built-in Vosk engine for Chinese speech-to-text, no internet required
-- 💬 **Chat Interface** - Describe tasks in natural language through an intuitive chat interface
-- 🤖 **Smart Automation** - AI analyzes screen content and automatically performs clicks, inputs, swipes, etc.
-- 📝 **Chat History** - Conversation history is automatically saved and persists across app restarts
-- 🎯 **Task Completion Notifications** - Get notified when tasks are complete with copyable results
-- 🔄 **Quick Retry** - Tap the refresh button on any message to retry that task
-- 🎨 **Modern UI** - Built with Material Design 3 and Jetpack Compose
+- 🎤 **离线语音识别** - 集成 Vosk 引擎，支持中文语音转文字，无需联网
+- 💬 **聊天式交互** - 通过对话方式描述任务，AI 自动理解并执行
+- 🤖 **智能自动化** - AI 分析屏幕内容，自动执行点击、输入、滑动等操作
+- 📝 **聊天记录保存** - 自动保存对话历史，关闭应用后不丢失
+- 🎯 **任务完成通知** - 任务完成后弹窗提示，可复制结果
+- 🔄 **快捷重试** - 点击消息上的刷新按钮可快速重新执行任务
+- 🎨 **现代化 UI** - Material Design 3 设计，流畅的动画效果
 
-## 🚀 Quick Start
+## 🚀 快速开始
 
-### Prerequisites
+### 系统要求
 
-- Android 8.0 (API 26) or higher
-- ~50MB free storage for the app and voice model
+- Android 8.0 (API 26) 或更高版本
+- 约 50MB 可用存储空间（包含语音模型）
 
-### Installation
+### 安装步骤
 
-1. **Download APK**
-   ```bash
-   # Build from source
-   ./gradlew assembleDebug
-   
-   # Install to device
-   ./gradlew installDebug
-   ```
-   Or download the latest APK from [Releases](https://github.com/mz135135/ai-boss/releases)
-
-2. **Grant Permissions**
-   - **Microphone** - Required for voice input
-   - **Accessibility Service** - Required for automation
-     - Go to Settings → Accessibility → Enable "AI Boss"
-   - **Overlay Permission** - Required for floating control window (Android 6.0+)
-
-3. **Configure API Key**
-   - Copy `api.properties.example` to `api.properties`
-   - Fill in your Doubao AI API credentials:
-     ```properties
-     DOUBAO_API_KEY=your_api_key_here
-     DOUBAO_BASE_URL=https://ark.cn-beijing.volces.com/api/v3
-     DOUBAO_MODEL_ID=doubao-seed-1-6-flash-250828
+1. **下载 APK**
+   - 从 [Releases](https://github.com/mz135135/ai-boss/releases) 下载最新版本
+   - 或从源码构建：
+     ```bash
+     ./gradlew assembleDebug
+     ./gradlew installDebug
      ```
 
-### Usage
+2. **授予权限**
+   - **录音权限**：首次使用语音输入时会请求
+   - **无障碍权限**：进入系统设置 → 无障碍 → 启用 "AI Boss"
+   - **悬浮窗权限**：Android 6.0+ 需要在设置中授权
 
-1. Open the app and tap the input field at the bottom
-2. Type or speak your task, for example:
-   - "Open Taobao and search for phones"
-   - "Check today's weather"
-   - "Like the first 5 videos on Douyin"
-3. Tap send, and the AI will automatically execute the task
+3. **配置 API 密钥**（如果从源码构建）
+   ```bash
+   cp api.properties.example api.properties
+   # 编辑 api.properties 填入你的豆包 AI API 密钥
+   ```
 
-#### Voice Input
+### 使用方法
 
-**Method 1: Press and Hold (Recommended)**
-1. Press and hold the microphone icon 🎤
-2. Start speaking
-3. Release to stop and fill in the text
+1. 打开应用，点击底部输入框
+2. 输入或语音描述任务，例如：
+   - "打开淘宝搜索手机"
+   - "查看今天的天气"
+   - "在抖音点赞前5个视频"
+3. 点击发送，AI 会自动执行任务
 
-**Method 2: Tap to Record**
-1. Tap the microphone icon to start recording
-2. Speak while seeing real-time recognition results
-3. Tap again to stop
+#### 语音输入
 
-> 💡 First launch will load the voice model (~3-5 seconds). You'll see "Voice recognition ready" when complete.
+**方式一：按住说话（推荐）**
+1. 按住麦克风图标 🎤
+2. 开始说话
+3. 松开自动停止并填入文字
 
-## 🏗️ Technical Architecture
+**方式二：点击录音**
+1. 点击麦克风图标开始录音
+2. 说话时实时显示识别结果
+3. 再次点击停止
 
-### Tech Stack
+> 💡 提示：首次启动会加载语音模型（约3-5秒），完成后会提示"语音识别已就绪"
 
-- **Language**: Kotlin
-- **UI Framework**: Jetpack Compose + Material Design 3
-- **Database**: Room + SharedPreferences
-- **Networking**: OkHttp + Gson
-- **Async**: Kotlin Coroutines + Flow
-- **Voice Recognition**: Vosk (offline Chinese model)
-- **AI Engine**: Doubao Context API
-- **System Services**: Accessibility Service
-- **Min SDK**: 26 (Android 8.0)
-- **Target SDK**: 34 (Android 14)
+## 🏗️ 技术架构
 
-### Core Modules
+### 技术栈
 
-#### 1. AI Client (`ai/DoubaoApiClient.kt`)
-- Encapsulates Doubao Context API calls
-- Supports context-aware conversations
-- Automatic API authentication and error handling
+- **开发语言**: Kotlin
+- **UI 框架**: Jetpack Compose + Material Design 3
+- **数据库**: Room + SharedPreferences
+- **网络**: OkHttp + Gson
+- **异步**: Kotlin Coroutines + Flow
+- **语音识别**: Vosk (离线中文模型)
+- **AI 引擎**: 豆包 Context API
+- **系统服务**: Accessibility Service
+- **最小 SDK**: 26 (Android 8.0)
+- **目标 SDK**: 34 (Android 14)
 
-#### 2. Voice Recognition (`voice/VoiceRecognizer.kt`)
-- Vosk offline speech recognition engine
-- Real-time speech-to-text
-- Automatic Chinese space removal
-- Press-and-hold or tap-to-record modes
+### 核心模块
 
-#### 3. Accessibility Service (`service/MyAccessibilityService.kt`)
-- Screen content capture and parsing
-- Element finding and manipulation
-- Supports click, input, and gesture operations
+#### 1. AI 客户端 (`ai/DoubaoApiClient.kt`)
+- 封装豆包 Context API 调用
+- 支持上下文对话管理
+- 自动处理 API 认证和错误
 
-#### 4. Task Manager (`automation/TaskManager.kt`)
-- AI-driven automation execution engine
-- Intelligent decision-making system
-- Action parsing and execution
-- Progress callbacks and state management
+#### 2. 语音识别 (`voice/VoiceRecognizer.kt`)
+- Vosk 离线语音识别引擎
+- 实时语音转文字
+- 中文空格自动移除
+- 按住说话/点击录音两种模式
 
-### Project Structure
+#### 3. 无障碍服务 (`service/MyAccessibilityService.kt`)
+- 屏幕内容抓取和解析
+- 元素查找和操作
+- 支持点击、输入、手势操作
+
+#### 4. 任务管理器 (`automation/TaskManager.kt`)
+- AI 驱动的自动化执行引擎
+- 智能决策系统
+- 动作解析和执行
+- 进度回调和状态管理
+
+### 项目结构
 
 ```
 AIAutomation/
+├── .github/
+│   └── workflows/
+│       └── android-ci.yml           # CI/CD 配置
 ├── app/
 │   ├── src/
 │   │   ├── main/
 │   │   │   ├── java/com/aiautomation/
-│   │   │   │   ├── ai/              # AI client
-│   │   │   │   ├── automation/      # Automation engine
-│   │   │   │   ├── data/model/      # Data models
-│   │   │   │   ├── service/         # System services
-│   │   │   │   ├── settings/        # App settings
-│   │   │   │   ├── ui/              # UI components
-│   │   │   │   └── voice/           # Voice recognition
-│   │   │   ├── res/                 # Resources
-│   │   │   └── AndroidManifest.xml
-│   │   ├── test/                    # Unit tests
-│   │   └── androidTest/             # Instrumented tests
+│   │   │   │   ├── ai/              # AI 客户端
+│   │   │   │   ├── automation/      # 自动化引擎
+│   │   │   │   ├── data/model/      # 数据模型
+│   │   │   │   ├── service/         # 系统服务
+│   │   │   │   ├── settings/        # 应用设置
+│   │   │   │   ├── ui/              # UI 界面
+│   │   │   │   └── voice/           # 语音识别
+│   │   │   └── res/                 # 资源文件
+│   │   ├── test/                    # 单元测试
+│   │   └── androidTest/             # UI 测试
 │   ├── build.gradle.kts
 │   └── proguard-rules.pro
-├── api.properties.example           # API config template
+├── api.properties.example           # API 配置模板
+├── keystore.properties.example      # 签名配置模板
 ├── .gitignore
-├── README.md
-└── 项目使用文档.md                   # Chinese documentation
+├── README.md                        # 中文文档
+├── README_EN.md                     # 英文文档
+├── RELEASE.md                       # 发布指南
+├── CONTRIBUTING.md                  # 贡献指南
+├── LICENSE                          # MIT 许可证
+└── 项目使用文档.md                   # 详细使用说明
 ```
 
-## 🔧 Development
+## 🔧 开发指南
 
-### Building
+### 构建项目
 
 ```bash
-# Clean project
+# 清理项目
 ./gradlew clean
 
-# Build debug APK
+# 构建 Debug 版本
 ./gradlew assembleDebug
 
-# Build release APK
+# 构建 Release 版本（需要配置签名）
 ./gradlew assembleRelease
 
-# Run tests
+# 运行测试
 ./gradlew test
 
-# Install to device
+# 安装到设备
 ./gradlew installDebug
 ```
 
-### Dependencies
+### 主要依赖
 
-Key dependencies include:
-- Jetpack Compose for UI
-- Vosk for offline speech recognition
-- OkHttp for networking
-- Room for local database
-- EasyFloat for floating windows
+- Jetpack Compose - 现代化 UI 框架
+- Vosk - 离线语音识别
+- OkHttp - 网络请求
+- Room - 本地数据库
+- EasyFloat - 悬浮窗管理
 
-See `app/build.gradle.kts` for complete dependency list.
+完整依赖列表见 `app/build.gradle.kts`
 
-### Voice Model
+### 语音模型
 
-The app uses `vosk-model-small-cn-0.22` (42MB) for Chinese recognition. For higher accuracy:
-1. Download `vosk-model-cn-0.22.zip` (255MB) from [alphacephei.com/vosk/models](https://alphacephei.com/vosk/models)
-2. Extract and rename to `model-cn`
-3. Replace `app/src/main/assets/model-cn`
-4. Rebuild the app
+应用使用 `vosk-model-small-cn-0.22` (42MB) 进行中文识别。如需更高准确率：
 
-## 🤝 Contributing
+1. 从 [alphacephei.com/vosk/models](https://alphacephei.com/vosk/models) 下载 `vosk-model-cn-0.22.zip` (255MB)
+2. 解压并重命名为 `model-cn`
+3. 替换 `app/src/main/assets/model-cn`
+4. 重新编译应用
 
-Contributions are welcome! Please feel free to submit a Pull Request. For major changes, please open an issue first to discuss what you would like to change.
+## 📦 Release 构建
 
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
+详见 [RELEASE.md](RELEASE.md) 了解如何：
+- 生成签名密钥
+- 配置签名
+- 构建 Release APK
+- 发布到 GitHub Releases
 
-## 📄 License
+## 🤝 贡献
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+欢迎贡献代码！请查看 [贡献指南](CONTRIBUTING.md) 了解详情。
 
-## ❓ FAQ
+1. Fork 本仓库
+2. 创建特性分支 (`git checkout -b feature/AmazingFeature`)
+3. 提交更改 (`git commit -m 'Add some AmazingFeature'`)
+4. 推送到分支 (`git push origin feature/AmazingFeature`)
+5. 提交 Pull Request
 
-**Q: Why is the first launch slow?**  
-A: The voice model files (42MB) need to be extracted from assets on first run. Subsequent launches will be much faster.
+## 📄 许可证
 
-**Q: How to improve voice recognition accuracy?**  
-A: Keep a quiet environment, speak clearly at moderate speed, keep phone 20-30cm from mouth, or upgrade to the larger model.
+本项目采用 MIT 许可证 - 详见 [LICENSE](LICENSE) 文件
 
-**Q: Why is Accessibility Service required?**  
-A: The app needs accessibility permissions to read screen content and perform automated operations, which is an Android system requirement for automation apps.
+## ❓ 常见问题
 
-**Q: What if a task fails?**  
-A: Check that accessibility permission is enabled, ensure network connectivity is stable, try describing the task more clearly, or check the floating window for AI reasoning process.
+**Q: 为什么首次启动较慢？**  
+A: 需要从 assets 解压语音模型文件（42MB），仅首次运行时需要，后续启动会快很多。
 
-## 🔗 Resources
+**Q: 语音识别准确率如何提高？**  
+A: 保持安静环境、吐字清晰、语速适中、手机距离适当（20-30cm），或升级到大型模型。
 
-- [Doubao AI Documentation](https://www.volcengine.com/docs/82379)
-- [Vosk Speech Recognition](https://alphacephei.com/vosk/)
-- [Android Accessibility Guide](https://developer.android.com/guide/topics/ui/accessibility)
-- [Jetpack Compose Documentation](https://developer.android.com/jetpack/compose)
+**Q: 无障碍服务为什么必须开启？**  
+A: 应用需要通过无障碍服务来读取屏幕内容和执行自动化操作，这是 Android 系统对自动化应用的权限要求。
 
-## 📊 Status
+**Q: 任务执行失败怎么办？**  
+A: 检查无障碍权限是否开启、网络连接是否正常、尝试更清晰地描述任务、查看悬浮窗的 AI 推理过程。
 
-**Version**: 1.0.0  
-**Build Status**: ✅ Active Development  
-**APK Size**: ~15 MB
+## 🔗 相关资源
+
+- [豆包 AI 官方文档](https://www.volcengine.com/docs/82379)
+- [Vosk 语音识别](https://alphacephei.com/vosk/)
+- [Android 无障碍开发指南](https://developer.android.com/guide/topics/ui/accessibility)
+- [Jetpack Compose 文档](https://developer.android.com/jetpack/compose)
+
+## 📊 项目状态
+
+**版本**: 1.0.0  
+**构建状态**: [![CI](https://github.com/mz135135/ai-boss/actions/workflows/android-ci.yml/badge.svg)](https://github.com/mz135135/ai-boss/actions)  
+**APK 大小**: ~15 MB
+
+## 🙏 致谢
+
+感谢所有贡献者和以下开源项目：
+- [Vosk](https://alphacephei.com/vosk/) - 离线语音识别
+- [豆包 AI](https://www.volcengine.com/product/doubao) - AI 能力支持
+- [EasyFloat](https://github.com/princekin-f/EasyFloat) - 悬浮窗管理
+- [Jetpack Compose](https://developer.android.com/jetpack/compose) - 现代化 UI 框架
 
 ---
 
+<div align="center">
+
 Made with ❤️ by the AI Boss team
+
+[⭐ 如果这个项目对你有帮助，请给个 Star](https://github.com/mz135135/ai-boss)
+
+</div>
