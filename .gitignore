@@ -79,7 +79,7 @@ lint/intermediates/
 lint/generated/
 lint/outputs/
 lint/tmp/
-lint-baseline.xml
+# Note: lint-baseline.xml should be committed to track known issues
 
 # Android Profiling
 *.hprof

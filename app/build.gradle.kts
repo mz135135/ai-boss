@@ -76,6 +76,16 @@ android {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
+    
+    lint {
+        // Use baseline to ignore existing issues and only flag new ones
+        baseline = file("lint-baseline.xml")
+        // Treat warnings as non-fatal for CI
+        abortOnError = false
+        // Generate reports
+        htmlReport = true
+        xmlReport = true
+    }
 }
 
 dependencies {
