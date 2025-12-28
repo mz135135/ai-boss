@@ -739,6 +739,9 @@ fun MainScreen(
                                         // 保存到历史
                                         saveTaskToHistory(taskDesc)
                                         
+                                        // 重置 TaskManager 状态（新会话）
+                                        taskManager.reset()
+                                        
                                         // 真正执行任务
                                         val result = taskManager.executeTask(task)
                                         

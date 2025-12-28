@@ -507,12 +507,16 @@ class TaskManager(
     }
     
     /**
-     * 重置状态（新任务）
+     * 重置状态（新任务）- 开始新会话
      */
     fun reset() {
         isStopped = false
         isPaused = false
-        previousResponseId = null
+        previousResponseId = null  // 清除上一次会话，开始新对话
+        lastScreenshotHash = null
+        screenNoChangeCount = 0
+        lastTouchPointPx = null
+        Log.d(TAG, "Ⓜ️ TaskManager 状态已重置，开始新会话")
     }
     
     private fun getActionName(action: Action): String {
